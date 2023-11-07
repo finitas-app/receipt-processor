@@ -2,13 +2,13 @@ from typing import Annotated
 
 from fastapi import FastAPI, File, HTTPException
 
-from parser import parse_image_to_json
+from parser import parse_receipt_to_json
 from request_formatter import format_request_to_proper_format
 
 app = FastAPI()
 
 
-@app.post(
+@app.get(
     "/parse",
     responses={
         200: {"description": "Successful request."},
@@ -21,4 +21,4 @@ async def post_parse(file: Annotated[bytes | None, File()] = None):
         raise HTTPException(400, detail="File not provided")
 
     image = format_request_to_proper_format(file)
-    return parse_image_to_json(image)
+    return parse_receipt_to_json(image)
