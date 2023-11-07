@@ -1,10 +1,9 @@
-import logging
 import re
 import pytesseract
+from logger_instance import logger
 from fastapi import HTTPException
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\Daniil\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
-logger = logging.getLogger()
 
 product_name_pattern = r'\s*(?P<name>\D+)'
 product_price_pattern = r'(?P<price>\d+[,. ]\d+)\D*$'
@@ -14,8 +13,8 @@ def parse_receipt_to_json(image):
     try:
         text = pytesseract.image_to_string(image, 'pol')
 
-        logger.info("OCR processing result:")
-        logger.info(text)
+        logger.debug("OCR processing result:")
+        logger.debug("------------------------\n" + text)
 
         return _parse_raw_result_to_json(text)
     except Exception:

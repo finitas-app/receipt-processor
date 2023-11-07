@@ -5,7 +5,7 @@ from fastapi import FastAPI, File, HTTPException
 from parser import parse_receipt_to_json
 from request_formatter import format_request_to_proper_format
 
-app = FastAPI()
+app = FastAPI(debug=True)
 
 
 @app.get(
