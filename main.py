@@ -1,14 +1,12 @@
 from typing import Annotated
-
 from fastapi import FastAPI, File, HTTPException
-
 from parser import parse_receipt_to_json
 from request_formatter import format_request_to_proper_format
 
 app = FastAPI(debug=True)
 
 
-@app.get(
+@app.post(
     "/parse",
     responses={
         200: {"description": "Successful request."},
