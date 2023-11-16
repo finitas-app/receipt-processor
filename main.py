@@ -22,3 +22,8 @@ async def post_parse(file: Annotated[bytes | None, File()] = None):
 
     image = format_request_to_proper_format(file)
     return parse_receipt_to_json(image)
+
+
+@app.get("/")
+async def health():
+    return {"description": "Server is up"}
