@@ -20,7 +20,7 @@ async def post_parse(file: Annotated[bytes | None, File()] = None):
         raise HTTPException(400, detail="File not provided")
 
     image = format_request_to_proper_format(file)
-    return parse_receipt_to_json(image)
+    return {"result": parse_receipt_to_json(image)}
 
 
 @app.get("/")

@@ -7,6 +7,8 @@ RUN apt-get update && \
     apt-get install ffmpeg libsm6 libxext6  -y && \
     apt-get -y install --no-install-recommends \
                        tesseract-ocr && \
+    apt-get -y install --no-install-recommends \
+                       tesseract-ocr-pol && \
     # Install depencies
     pip --no-cache install \
                 pillow \
