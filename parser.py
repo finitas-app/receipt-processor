@@ -1,9 +1,9 @@
 import re
+import traceback
+
 import pytesseract
 from logger_instance import logger
 from fastapi import HTTPException
-
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\Daniil\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
 product_name_pattern = r'\s*(?P<name>\D+)'
 product_price_pattern = r'(?P<price>\d+[,. ]\d+)\D*$'
@@ -19,6 +19,7 @@ def parse_receipt_to_json(image):
         return _parse_raw_result_to_json(text)
     except Exception:
         logger.error('Failed to convert request image to a proper format for OCR processing.')
+        traceback.print_exc()
         raise HTTPException(400, detail="Error occurred during receipt processing.")
 
 

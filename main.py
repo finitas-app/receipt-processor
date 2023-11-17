@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import FastAPI, File, HTTPException
+import uvicorn
 from parser import parse_receipt_to_json
 from request_formatter import format_request_to_proper_format
 
@@ -19,9 +20,13 @@ async def post_parse(file: Annotated[bytes | None, File()] = None):
         raise HTTPException(400, detail="File not provided")
 
     image = format_request_to_proper_format(file)
-    return parse_receipt_to_json(image)
+    return {"result": parse_receipt_to_json(image)}
 
 
 @app.get("/")
 async def health():
     return {"description": "Server is up"}
+
+
+if __name__ == '__main__':
+    uvicorn.run(app, host="0.0.0.0", port=8081)
