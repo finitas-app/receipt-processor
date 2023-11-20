@@ -2,8 +2,9 @@ import re
 import traceback
 
 import pytesseract
+
+from exceptions import BadRequestException, ErrorCode
 from logger_instance import logger
-from fastapi import HTTPException
 
 product_name_pattern = r'\s*(?P<name>\D+)'
 product_price_pattern = r'(?P<price>\d+[,. ]\d+)\D*$'
@@ -13,14 +14,17 @@ def parse_receipt_to_json(image):
     try:
         text = pytesseract.image_to_string(image, 'pol')
 
-        logger.debug("OCR processing result:")
-        logger.debug("------------------------\n" + text)
+        logger.debug('OCR processing result:')
+        logger.debug('------------------------\n' + text)
 
         return _parse_raw_result_to_json(text)
     except Exception:
-        logger.error('Failed to convert request image to a proper format for OCR processing.')
+        logger.error('Error occurred during OCR processing.')
         traceback.print_exc()
-        raise HTTPException(400, detail="Error occurred during receipt processing.")
+        raise BadRequestException(
+            error_code=ErrorCode.INVALID_FILE_PROVIDED,
+            error_message='Error occurred during OCR processing.',
+        )
 
 
 def _parse_raw_result_to_json(text):
@@ -43,4 +47,7 @@ def _parse_raw_result_to_json(text):
         return result
     except Exception:
         logger.error('Failed to parse raw text to JSON format.')
-        raise HTTPException(400, detail="Error occurred during receipt processing.")
+        raise BadRequestException(
+            error_code=ErrorCode.INVALID_FILE_PROVIDED,
+            error_message='Failed to parse raw text to JSON format.',
+        )

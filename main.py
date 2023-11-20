@@ -1,6 +1,11 @@
 from typing import Annotated
-from fastapi import FastAPI, File, HTTPException
+
 import uvicorn
+from fastapi import FastAPI, File
+from fastapi.responses import JSONResponse
+
+from exceptions import BadRequestException, ProjectBaseException
+from exceptions import ErrorCode
 from parser import parse_receipt_to_json
 from request_formatter import format_request_to_proper_format
 
@@ -17,7 +22,9 @@ app = FastAPI(debug=True)
 )
 async def post_parse(file: Annotated[bytes | None, File()] = None):
     if file is None or len(file) == 0:
-        raise HTTPException(400, detail="File not provided")
+        raise BadRequestException(
+            error_code=ErrorCode.FILE_NOT_PROVIDED,
+        )
 
     image = format_request_to_proper_format(file)
     return {"result": parse_receipt_to_json(image)}
@@ -26,6 +33,17 @@ async def post_parse(file: Annotated[bytes | None, File()] = None):
 @app.get("/")
 async def health():
     return {"description": "Server is up"}
+
+
+@app.exception_handler(ProjectBaseException)
+async def unicorn_exception_handler(_, exc: ProjectBaseException):
+    return JSONResponse(
+        status_code=exc.http_status_code,
+        content={
+            "errorCode": exc.error_code.value,
+            "errorMessage": exc.error_message,
+        },
+    )
 
 
 if __name__ == '__main__':
