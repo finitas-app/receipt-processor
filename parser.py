@@ -5,8 +5,6 @@ import pytesseract
 from logger_instance import logger
 from fastapi import HTTPException
 
-#pytesseract.pytesseract.tesseract_cmd = r'C:\Users\Daniil\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
-
 product_name_pattern = r'\s*(?P<name>\D+)'
 product_price_pattern = r'(?P<price>\d+[,. ]\d+)\D*$'
 
