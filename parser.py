@@ -20,7 +20,7 @@ def parse_receipt_to_json(image):
     except Exception:
         logger.error('Failed to convert request image to a proper format for OCR processing.')
         traceback.print_exc()
-        raise HTTPException(400, detail="Error occurred during receipt processing.")
+        raise HTTPException(400, {"errorCode": 'FILE_PARSE_ERROR', "errorMessage": ""})
 
 
 def _parse_raw_result_to_json(text):

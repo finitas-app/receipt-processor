@@ -17,4 +17,4 @@ def format_request_to_proper_format(request_file):
         return cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
     except Exception:
         logger.error('Failed to convert request image to a proper format for OCR processing.')
-        raise HTTPException(415, detail="File invalid. Failed to format.")
+        raise HTTPException(415, {"errorCode": 'INVALID_FILE_PROVIDED', "errorMessage": ""})
