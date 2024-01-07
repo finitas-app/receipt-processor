@@ -1,10 +1,16 @@
-from typing import Annotated
-from fastapi import FastAPI, File, HTTPException
+import base64
+
 import uvicorn
-from starlette.responses import JSONResponse
+from fastapi import FastAPI
+from pydantic import BaseModel
 
 from parser import parse_receipt_to_json
 from request_formatter import format_request_to_proper_format
+
+
+class Base64Receipt(BaseModel):
+    value: str
+
 
 app = FastAPI(debug=True)
 
@@ -17,12 +23,8 @@ app = FastAPI(debug=True)
         415: {"description": "Request type is not allowed."},
     }
 )
-async def post_parse(file: Annotated[bytes | None, File()] = None):
-    if file is None or len(file) == 0:
-        return JSONResponse(
-            status_code=400,
-            content={"errorCode": 'FILE_NOT_PROVIDED', "errorMessage": ""},
-        )
+async def post_parse(body: Base64Receipt):
+    file = base64.b64decode(body.value)
 
     try:
         image = format_request_to_proper_format(file)
