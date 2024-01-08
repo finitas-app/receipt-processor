@@ -1,8 +1,9 @@
 import base64
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from starlette.responses import JSONResponse
 
 from parser import parse_receipt_to_json
 from request_formatter import format_request_to_proper_format
@@ -28,7 +29,7 @@ async def post_parse(body: Base64Receipt):
 
     try:
         image = format_request_to_proper_format(file)
-        return {"result": parse_receipt_to_json(image)}
+        return parse_receipt_to_json(image)
     except HTTPException as ex:
         return JSONResponse(
             status_code=ex.status_code,
